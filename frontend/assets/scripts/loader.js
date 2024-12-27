@@ -1,10 +1,10 @@
   function loadDoc() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-      document.getElementById("demo").innerHTML =
+      document.body.innerHTML =
       this.responseText;
     }
-    xhttp.open("GET", "../test.txt");
+    xhttp.open("GET", "../login1.html");
     xhttp.send();
   }
 

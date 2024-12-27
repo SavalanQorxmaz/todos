@@ -1,5 +1,8 @@
 
-import {loadDoc} from "./loader.js" 
+import {login, register} from './loginRegister.js'
+
+import './login.js'
+import './register.js'
 
 function setCookie(cname,cvalue,exdays) {
     const d = new Date();
@@ -37,4 +40,15 @@ function setCookie(cname,cvalue,exdays) {
   }
 
 
-document.getElementById('load').addEventListener('click', loadDoc)
+document.getElementById('load')?.addEventListener('click', login)
+document.addEventListener('click',(e)=>{
+  if (e.target.id =='register'){
+    register()
+  }
+})
+document.addEventListener('click', (e)=>{
+  if(e.target.id == 'login'){login()}
+})
+
+
+
