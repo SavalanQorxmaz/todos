@@ -1,14 +1,14 @@
-.login-register {
+body .login-register {
   width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.login-register .hidden {
+body .login-register .hidden {
   display: none;
 }
-.login-register .login-register-frame {
+body .login-register .login-register-frame {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -17,22 +17,22 @@
   border-radius: 5%;
   background-color: rgba(142, 148, 150, 0.384);
 }
-.login-register .login-register-frame h2 {
+body .login-register .login-register-frame h2 {
   color: rgb(8, 1, 37);
 }
-.login-register .login-register-frame .login-register-form {
+body .login-register .login-register-frame .login-register-form {
   padding: 10px;
   display: flex;
   flex-direction: column;
 }
-.login-register .login-register-frame .login-register-form input {
+body .login-register .login-register-frame .login-register-form input {
   font-size: medium;
 }
-.login-register .login-register-frame .login-register-form input.submit:enabled:hover {
+body .login-register .login-register-frame .login-register-form input.submit:enabled:hover {
   background-color: rgb(2, 54, 37);
   cursor: pointer;
 }
-.login-register .login-register-frame .login-register-form > *:not(p) {
+body .login-register .login-register-frame .login-register-form > *:not(p) {
   margin: 10px 10px 0 10px;
   padding: 8px;
   background-color: inherit;
@@ -41,14 +41,14 @@
   box-shadow: 0px 0px 5px rgba(0, 128, 0, 0.377);
   border-radius: 5px;
 }
-.login-register .login-register-frame .login-register-form p {
+body .login-register .login-register-frame .login-register-form p {
   margin: 5px;
   padding: 2px;
   font-size: 12px;
   text-align: center;
   color: rgb(100, 5, 5);
 }
-.login-register .login-register-frame button {
+body .login-register .login-register-frame button {
   align-self: flex-end;
   padding: 5px;
   margin: 3px;
@@ -56,12 +56,64 @@
   border: none;
   cursor: pointer;
 }
-.login-register .login-register-frame button:hover {
+body .login-register .login-register-frame button:hover {
   background-color: rgb(241, 157, 54);
+}
+
+body header {
+  background-color: rgb(63, 5, 5);
+  color: rgb(248, 228, 204);
+  height: 70px;
+  width: 100%;
+}
+body header #header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  padding: 5px;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+}
+body header #header .current-user {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  outline: none;
+  border: none;
+  border-radius: 10%;
+  font-size: 1.2rem;
+}
+body header #header .current-user:hover {
+  background-color: rgb(53, 31, 4);
+  cursor: pointer;
+}
+
+body .cover {
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(35, 34, 36, 0.863);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   background-color: beige;
+  margin: 0;
+  padding: 0;
+}
+body #root {
+  position: relative;
+  top: 70px;
 }
 
 /*# sourceMappingURL=main.css.map */

@@ -1,6 +1,5 @@
+import { setCookie, getCookie, handleCurrentUser, rootElement } from "./index.js"
 
-
-const rootElement = document.querySelector('#root')
 const formData = new FormData()
 
 const isDataReady = ()=> {
@@ -19,8 +18,8 @@ const setData = (data, name, currentValue) => {
     data.set(name, currentValue)
 }
 
-rootElement.addEventListener('keyup', (e)=>{
-    const inputNames = ['login-username', 'login-password']
+document.addEventListener('keyup', (e)=>{
+        const inputNames = ['login-username', 'login-password']
    for (let x of inputNames){
     if(e.target.name  == x){
         const currentValue = document.querySelector(`input[name=${x}]`).value
@@ -30,7 +29,7 @@ rootElement.addEventListener('keyup', (e)=>{
    isDataReady()
 })
 
-rootElement.addEventListener('submit', (e)=>{
+document.addEventListener('submit', (e)=>{
     if(e.target.id == "login-form"){
         e.preventDefault()
         
@@ -45,7 +44,8 @@ rootElement.addEventListener('submit', (e)=>{
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Content-Type, Authorization',
             'Access-Control-Allow-Methods': '*',
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Autorization": `${getCookie().get('access')}`
           };
         fetch('http://127.0.0.1:8000/login/',{
             method: 'POST',
@@ -53,11 +53,22 @@ rootElement.addEventListener('submit', (e)=>{
             body: JSON.stringify(data)
         })
         .then(res=>{
-            console.group(data)
             return res.json()
-            // console.log(res)
+            console.log(res)
         })
-        .then(res=>console.log(res))
+        .then(res=>{
+            console.log(decodeURIComponent(res.tokens.access))
+            setCookie('access', 'Bearer '+ res.tokens.access)
+            setCookie('refresh', res.tokens.refresh)
+            setCookie('user', res.email)
+            // document.cookie = `${res.email};'Bearer ' + ${res.tokens.access}`
+            handleCurrentUser()
+            return res
+
+        })
+        .then(res=> {
+            getCookie()
+        })
     }
 })
 
