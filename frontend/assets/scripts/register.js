@@ -1,6 +1,6 @@
-
-
-const rootElement = document.querySelector('#root')
+import { setCookie, getCookie, handleCurrentUser, rootElement } from "./index.js"
+import { login } from "./loginRegister.js"
+// const rootElement = document.querySelector('#root')
 const registerFormData = new FormData()
 
 const isRegisterDataReady = ()=> {
@@ -39,7 +39,7 @@ const setRegisterData = (data, name, currentValue) => {
     handleRegisterChange(registerFormData)
 }
 
-rootElement.addEventListener('keyup', (e)=>{
+document.addEventListener('keyup', (e)=>{
     const inputNames = ['register-username', 'register-password', 'register-password_again']
     // console.log(e.target.name)
    for (let x of inputNames){
@@ -51,7 +51,7 @@ rootElement.addEventListener('keyup', (e)=>{
 })
 
 
-rootElement.addEventListener('submit', (e)=>{
+document.addEventListener('submit', (e)=>{
     if(e.target.id == "register-form"){
         e.preventDefault()
         const userName = registerFormData.get('register-username')
@@ -65,9 +65,8 @@ rootElement.addEventListener('submit', (e)=>{
         // console.log(userNameLogin, passwordLogin)
         const headers = {
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Content-Type, Authorization',
             'Access-Control-Allow-Methods': '*',
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           };
         fetch('http://127.0.0.1:8000/register/',{
             method: 'POST',
@@ -75,8 +74,9 @@ rootElement.addEventListener('submit', (e)=>{
             body: JSON.stringify(data)
         })
         .then(res=>{
-            return res.json()
-            // console.log(res)
+            login()
+            document?.querySelector('#login-register-page').remove()
+            return res
         })
         .then(res=>console.log(res))
     }

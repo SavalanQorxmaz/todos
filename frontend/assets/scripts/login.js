@@ -1,4 +1,4 @@
-import { setCookie, getCookie, handleCurrentUser, rootElement } from "./index.js"
+import { setCookie, getCookie, handleCurrentUser} from "./index.js"
 
 const formData = new FormData()
 
@@ -28,6 +28,21 @@ document.addEventListener('keyup', (e)=>{
    }
    isDataReady()
 })
+function getCookie1(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 document.addEventListener('submit', (e)=>{
     if(e.target.id == "login-form"){
@@ -39,13 +54,18 @@ document.addEventListener('submit', (e)=>{
             email: userNameLogin,
             password: passwordLogin
         }
+        
+        const csrftoken = getCookie1('csrftoken');
         // console.log(userNameLogin, passwordLogin)
         const headers = {
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Content-Type, Authorization',
+            // 'Access-Control-Allow-Headers': '*',
             'Access-Control-Allow-Methods': '*',
             "Content-Type": "application/json",
-            "Autorization": `${getCookie().get('access')}`
+            // 'Access-Control-Allow-Credentials': true,
+            'X-CSRFToken': csrftoken,
+            // 'mode': 'same-origin',
+            // "Autorization": `${getCookie().get('access')}`
           };
         fetch('http://127.0.0.1:8000/login/',{
             method: 'POST',
@@ -54,7 +74,6 @@ document.addEventListener('submit', (e)=>{
         })
         .then(res=>{
             return res.json()
-            console.log(res)
         })
         .then(res=>{
             console.log(decodeURIComponent(res.tokens.access))
@@ -63,6 +82,7 @@ document.addEventListener('submit', (e)=>{
             setCookie('user', res.email)
             // document.cookie = `${res.email};'Bearer ' + ${res.tokens.access}`
             handleCurrentUser()
+            document?.querySelector('#login-register-page').remove()
             return res
 
         })

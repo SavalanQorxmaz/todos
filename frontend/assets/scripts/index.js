@@ -1,6 +1,8 @@
 
 import {login, register} from './loginRegister.js'
 export const rootElement = document?.querySelector('#root')
+const dispatcher = document?.querySelector('#dispatcher')
+import { logoutPageCreaterF, logoutF} from './logout.js'
 
 import './login.js'
 import './register.js'
@@ -44,23 +46,23 @@ export function setCookie(cname,cvalue,exdays) {
     }
   }
 
-// document.addEventListener('loadeddata', (e)=> {
-//     getCookie()
-//     console.log('salam')
-//   })
 
 export function handleCurrentUser(){
   const currentUser = document.querySelector('#current-user')
   let c = getCookie()
   c.get('user') ? currentUser.innerHTML =  c.get('user') : currentUser.innerHTML = 'Guest'
   document.querySelector('#header').appendChild(currentUser)
+  return c.get('user') ? c.get('user') :'Guest'
 }
 
 
-window.addEventListener('load', handleCurrentUser)
+addEventListener('load', function() {
+  const currentUser = handleCurrentUser()
+  currentUser == 'Guest' ? login() : null
+  document.querySelector('#current-user').innerHTML = currentUser
+})
   
 
-document.getElementById('load')?.addEventListener('click', login)
 
 
 document.addEventListener('click',(e)=>{
@@ -70,82 +72,45 @@ document.addEventListener('click',(e)=>{
   else if(e.target.id == 'login'){login()}
 })
 
-async function  logout(){
-  return new Promise((res, rej)=>{
-
-    function createF(){
-      const cover =  document.createElement('div')
-      const xhttp = new XMLHttpRequest();
-      xhttp.onload = function() {
-        cover.innerHTML =
-         this.responseText;
-      }
-      xhttp.open("GET", "../logout.html");
-      xhttp.send();
-          document.body.appendChild(cover)
-          return cover
+function acceptCancelLogoutF(){
+    if(dispatcher?.querySelector('input[name="dispatch-logout"]').textContent == 'accept'){
+logoutF()
+document.querySelector('#logout-page').remove()
+login()
     }
-    
-    
-  res(createF())
-
-  })
-  .then(res=>{
-      return document.addEventListener('click',(e)=>{
-          if(e.target.name == 'logout-accept'){
-            return 'accept'
-          }
-          else if(e.target.name == 'logout-cancel'){
-            console.log('cancel')
-            return 'cancel'
-          }
-          else {
-            return undefined
-          }
-        
-      })
-  })
-  .then(res=>{
-
-    console.log(res)
-    const cover = res
-  })
-  .then(res=>{
-    const headers = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Content-Type, Authorization',
-      'Access-Control-Allow-Methods': '*',
-      "Content-Type": "application/json",
-      "Authorization": `${getCookie().get('access')}`
-    };
-    fetch('http://127.0.0.1:8000/logout/',{
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({refresh: getCookie().get('refresh')})
-        })
-        .then(res=>{
-          document.cookie.split(';').forEach((c)=>{
-            document.cookie +=';Max-Age=0'
-            handleCurrentUser()
-          })
-            return res.data
-            // console.log(res)
-        })
-        // .then(res=>{
-        //     console.log(decodeURIComponent(res.tokens.access))
-        //     setCookie(res.email, res.tokens.access)
-        //     // document.cookie = `${res.email};'Bearer ' + ${res.tokens.access}`
-        //     handleCurrentUser()
-        //     return res
-
-        // })
-        // .then(res=> {
-        //     getCookie()
-        // })
-  })
-  // return result
+    else if(dispatcher?.querySelector('input[name="dispatch-logout"]').textContent == 'cancel'){
+      document.querySelector('#logout-page').remove()
+    }
 }
 
-document.querySelector('#current-user').addEventListener('click', logout)
 
 
+document.addEventListener('click', async (e)=>{
+  
+  
+  if (e.target.id == 'current-user'){
+  const currentUser = handleCurrentUser()
+  currentUser == 'Guest' ? login() : logoutPageCreaterF()
+  }
+  
+  if (document.querySelector('#logout-page')){
+    if(e.target.name == 'logout-accept'){
+      console.log('accept')
+       dispatcher.querySelector('input[name="dispatch-logout"]').innerHTML = 'accept'
+       
+    acceptCancelLogoutF()
+    }
+    else if(e.target.name == 'logout-cancel'){
+      console.log('cancel')
+      dispatcher.querySelector('input[name="dispatch-logout"]').innerHTML = 'cancel'
+      
+    acceptCancelLogoutF()
+    }
+    else {
+      document.querySelector('input[name="dispatch-logout"]').innerHTML = ''
+    }
+  }
+
+   
+  
+})
