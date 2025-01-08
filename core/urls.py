@@ -21,8 +21,10 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from users.views import *
+from tasks.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', TaskListAPI.as_view(), name='tasks'),
     path('register/',RegisterView.as_view(), name='register'),
     path('login/',LoginAPIView.as_view()),
     path('logout/', LogoutAPIView.as_view()),
