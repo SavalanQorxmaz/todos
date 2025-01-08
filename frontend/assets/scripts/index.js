@@ -1,5 +1,7 @@
 
 import {login, register} from './loginRegister.js'
+import { taskLoader } from './taskLoader.js'
+import { tasksDefault } from './tasks.js'
 export const rootElement = document?.querySelector('#root')
 const dispatcher = document?.querySelector('#dispatcher')
 import { logoutPageCreaterF, logoutF} from './logout.js'
@@ -58,7 +60,7 @@ export function handleCurrentUser(){
 
 addEventListener('load', function() {
   const currentUser = handleCurrentUser()
-  currentUser == 'Guest' ? login() : null
+  currentUser == 'Guest' ? login() : taskLoader()
   document.querySelector('#current-user').innerHTML = currentUser
 })
   
@@ -80,6 +82,8 @@ login()
     }
     else if(dispatcher?.querySelector('input[name="dispatch-logout"]').textContent == 'cancel'){
       document.querySelector('#logout-page').remove()
+      taskLoader()
+      tasksDefault()
     }
 }
 

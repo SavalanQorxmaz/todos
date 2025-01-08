@@ -16,19 +16,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 from users.views import *
 from tasks.views import *
+# router = DefaultRouter()
+# router.register(r'tasklists', TaskListAPI, basename='tasklist')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TaskListAPI.as_view(), name='tasks'),
     path('register/',RegisterView.as_view(), name='register'),
     path('login/',LoginAPIView.as_view()),
     path('logout/', LogoutAPIView.as_view()),
     path('api-auth/', include('rest_framework.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('tasks/', TaskAPI.as_view(), name='task-list-create'),
+    path('', TaskListAPI.as_view(), name='tasks'),
 ]
