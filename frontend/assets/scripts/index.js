@@ -1,30 +1,37 @@
 
 import {login, register} from './loginRegister.js'
+export const rootElement = document?.querySelector('#root')
+const dispatcher = document?.querySelector('#dispatcher')
+import { logoutPageCreaterF, logoutF} from './logout.js'
 
 import './login.js'
 import './register.js'
 
-function setCookie(cname,cvalue,exdays) {
-    const d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+export function setCookie(cname,cvalue,exdays) {
+    document.cookie = `${cname}=${cvalue};path=/`;
+    // console.log(document.cookie)
   }
   
-  function getCookie(cname) {
-    let name = cname + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
+  export  function getCookie() {
+    // const res = await new Promise((res, rej)=>{
+
+    //   let rest = document.cookie.split(';')
+    //   res(rest)
+    // })
+    // .then(res=>{
+
+    // })
+    const result = new Map
+    let rest = document.cookie.split(';')
+    rest.forEach(c=>{
+      const [cname, cvalue] = c.split('=')
+      // console.log(cname, "-----", cvalue)
+      if(cname.includes('user') || cname.includes('refresh') || cname.includes('access')){
+        result.set(cname.trim(), cvalue.trim())
       }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
+    })
+    
+    return result 
   }
   
   function checkCookie() {
@@ -40,15 +47,70 @@ function setCookie(cname,cvalue,exdays) {
   }
 
 
-document.getElementById('load')?.addEventListener('click', login)
+export function handleCurrentUser(){
+  const currentUser = document.querySelector('#current-user')
+  let c = getCookie()
+  c.get('user') ? currentUser.innerHTML =  c.get('user') : currentUser.innerHTML = 'Guest'
+  document.querySelector('#header').appendChild(currentUser)
+  return c.get('user') ? c.get('user') :'Guest'
+}
+
+
+addEventListener('load', function() {
+  const currentUser = handleCurrentUser()
+  currentUser == 'Guest' ? login() : null
+  document.querySelector('#current-user').innerHTML = currentUser
+})
+  
+
+
+
 document.addEventListener('click',(e)=>{
   if (e.target.id =='register'){
     register()
   }
-})
-document.addEventListener('click', (e)=>{
-  if(e.target.id == 'login'){login()}
+  else if(e.target.id == 'login'){login()}
 })
 
+function acceptCancelLogoutF(){
+    if(dispatcher?.querySelector('input[name="dispatch-logout"]').textContent == 'accept'){
+logoutF()
+document.querySelector('#logout-page').remove()
+login()
+    }
+    else if(dispatcher?.querySelector('input[name="dispatch-logout"]').textContent == 'cancel'){
+      document.querySelector('#logout-page').remove()
+    }
+}
 
 
+
+document.addEventListener('click', async (e)=>{
+  
+  
+  if (e.target.id == 'current-user'){
+  const currentUser = handleCurrentUser()
+  currentUser == 'Guest' ? login() : logoutPageCreaterF()
+  }
+  
+  if (document.querySelector('#logout-page')){
+    if(e.target.name == 'logout-accept'){
+      console.log('accept')
+       dispatcher.querySelector('input[name="dispatch-logout"]').innerHTML = 'accept'
+       
+    acceptCancelLogoutF()
+    }
+    else if(e.target.name == 'logout-cancel'){
+      console.log('cancel')
+      dispatcher.querySelector('input[name="dispatch-logout"]').innerHTML = 'cancel'
+      
+    acceptCancelLogoutF()
+    }
+    else {
+      document.querySelector('input[name="dispatch-logout"]').innerHTML = ''
+    }
+  }
+
+   
+  
+})
